@@ -1,5 +1,7 @@
 # Savoria — Restaurant Dashboard
 
+**Live demo:** https://savoria-restaurant-dashboard.vercel.app
+
 A restaurant management dashboard UI built for a client. This public version runs on **dummy data**: the client's real figures, orders and names are confidential, so every number, name and order here is placeholder data. The design, components and interactions match the delivered product.
 
 ## Screens
