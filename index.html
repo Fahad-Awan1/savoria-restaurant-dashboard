@@ -82,7 +82,7 @@
       padding: 18px 28px 28px;
       background: var(--panel);
       transition: background .4s ease;
-      animation: shellIn .9s var(--ease) both;
+      animation: shellIn .9s var(--ease) backwards; /* not 'both': a lingering transform would pin the mobile bottom bar to the page instead of the screen */
     }
     @keyframes shellIn { from { opacity: 0; transform: translateY(24px) scale(.985); } }
 
@@ -128,7 +128,8 @@
     .user[aria-expanded="true"] .chev { transform: rotate(180deg); }
 
     /* ---------- Layout ---------- */
-    .body { display: grid; grid-template-columns: 44px 1fr; gap: 22px; margin-top: 22px; }
+    .body { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 22px; margin-top: 22px; }
+    main { min-width: 0; }
     .side { display: flex; flex-direction: column; align-items: center; gap: 14px; }
     .side-group { position: relative; flex-direction: column; padding: 5px; gap: 6px; }
     .side-btn { position: relative; z-index: 1; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; color: var(--muted); transition: color .3s ease; }
@@ -387,7 +388,8 @@
     .field { display: grid; gap: 6px; margin-bottom: 12px; font-size: 11px; font-weight: 500; color: var(--ink-2); }
     .field input, .field select { height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--sub); outline: 0; font-size: 13px; transition: border-color .2s, box-shadow .2s; }
     .field input:focus, .field select:focus { border-color: var(--orange); box-shadow: 0 0 0 4px rgb(240 90 40 / 12%); }
-    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .field input, .field select { width: 100%; min-width: 0; }
     .types { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
     .types label { display: grid; justify-items: center; gap: 4px; padding: 8px 4px; border: 1px solid var(--line); border-radius: 10px; font-size: 10px; cursor: pointer; transition: .2s; }
     .types input { display: none; }
@@ -628,7 +630,7 @@
     .lock .avatar { width: 64px; height: 64px; margin: 4px auto 14px; font-size: 20px; }
 
     @media (max-width: 1000px) {
-      .cols-2-1, .cols-3-1, .cols-1-1 { grid-template-columns: 1fr; }
+      .cols-2-1, .cols-3-1, .cols-1-1 { grid-template-columns: minmax(0, 1fr); }
     }
     @media (max-width: 860px) {
       .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -670,7 +672,7 @@
 
     /* Responsive */
     @media (max-width: 1100px) {
-      .grid { grid-template-columns: 1fr 1fr; grid-template-areas: "bal stats" "chart chart" "limit cards" "table table"; }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "bal stats" "chart chart" "limit cards" "table table"; }
     }
     @media (max-width: 860px) {
       .shell { padding: 14px; }
@@ -682,15 +684,117 @@
     }
     @media (max-width: 720px) {
       .body { grid-template-columns: 1fr; }
-      .side { flex-direction: row; justify-content: center; }
       .side-group { flex-direction: row; }
       .side-spacer, .side-btn[data-tip]::after { display: none; }
-      .side-ind { top: 5px; left: 0; }
       .grid { grid-template-columns: 1fr; grid-template-areas: "bal" "stats" "chart" "limit" "cards" "table"; }
       .greet h1 { font-size: 24px; }
       .t-head { flex-wrap: wrap; }
       .search, .search:focus-within { width: 100%; }
       .t-tools { width: 100%; }
+    }
+
+    /* ---------- Phones ---------- */
+    @media (max-width: 720px) {
+      .shell { padding: 12px 12px 96px; }
+      .topbar { gap: 10px; }
+      .body { grid-template-columns: minmax(0, 1fr); margin-top: 14px; }
+      .grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "bal" "stats" "chart" "limit" "cards" "table"; }
+
+      /* sidebar becomes a fixed bottom navigation bar */
+      .side { position: fixed; z-index: 40; left: 12px; right: 12px; bottom: 12px; flex-direction: row; justify-content: center; }
+      .side > :not(#sideNav) { display: none; }
+      #sideNav { width: 100%; max-width: 420px; flex-direction: row; justify-content: space-between; padding: 6px; box-shadow: 0 10px 30px rgb(0 0 0 / 18%); }
+      #sideNav .side-btn { width: 38px; height: 38px; }
+      #sideNav .side-ind { top: 6px; left: 0; width: 38px; height: 38px; }
+      .toasts { left: 12px; right: 12px; bottom: 84px; }
+      .toast { min-width: 0; max-width: none; }
+
+      .greet { align-items: flex-start; }
+      .greet h1 { font-size: 24px; }
+      .greet-actions, .greet-actions .btn { width: 100%; }
+      .card-h { flex-wrap: wrap; gap: 10px; }
+      .card-h .search, .card-h .search:focus-within { width: 100%; }
+      .chips { overflow-x: auto; flex-wrap: nowrap; max-width: 100%; scrollbar-width: none; }
+      .chips::-webkit-scrollbar { display: none; }
+      .chips button { flex: none; }
+      .seg { flex: none; }
+      .t-head { gap: 10px; }
+      .t-tools { flex-wrap: nowrap; }
+      .t-tools .search, .t-tools .search:focus-within { flex: 1; width: auto; min-width: 0; }
+      .t-foot { flex-wrap: wrap; gap: 8px; }
+      .rail { margin-right: -12px; }
+      .modal { padding: 18px; border-radius: 18px; max-height: calc(100vh - 32px); overflow-y: auto; }
+      .types { grid-template-columns: repeat(2, 1fr); }
+      .menu { max-width: calc(100vw - 16px); }
+      .notif { width: auto; max-width: calc(100vw - 40px); }
+      .lc { grid-template-columns: 34px minmax(0, 1fr); }
+      .lc-x span:nth-child(even) { visibility: hidden; }
+      .mbars { gap: 3px; }
+      .mlab { font-size: 8px; }
+      .heat { grid-template-columns: 30px repeat(5, minmax(0, 1fr)); }
+      .res { grid-template-columns: 58px minmax(0, 1fr) auto; gap: 8px; padding: 10px 4px; }
+      .res .party { display: none; }
+      .hours-row { grid-template-columns: 80px minmax(0, 1fr) auto; }
+      .pref > div { min-width: 0; }
+
+      /* tables become stacked cards: label on the left, value on the right */
+      .tbl-wrap { overflow: visible; padding: 0; background: none; }
+      .tbl-wrap table { min-width: 0; }
+      .tbl-wrap thead { display: none; }
+      .tbl-wrap table, .tbl-wrap tbody, .tbl-wrap tr, .tbl-wrap td { display: block; width: 100%; }
+      .tbl-wrap tr { position: relative; margin-bottom: 10px; padding: 4px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); }
+      .tbl-wrap tr.sel { background: var(--orange-soft); }
+      .tbl-wrap td { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; padding: 8px 0; border-top: 1px solid var(--sub); border-radius: 0 !important; background: none !important; white-space: normal; text-align: right; }
+      .tbl-wrap td:first-child, .tbl-wrap td[data-label=""] + td { border-top: 0; }
+      .tbl-wrap td::before { content: attr(data-label); flex: none; color: var(--muted); font-size: 11px; text-align: left; }
+      .tbl-wrap td[data-label=""] { justify-content: flex-end; }
+      .tbl-wrap td[data-label=""]::before { display: none; }
+      .tbl-wrap td .act, .tbl-wrap td .who, .tbl-wrap td .stock { justify-content: flex-end; text-align: right; }
+      .tbl-wrap td .stock .bar { width: 70px; }
+      .tbl-wrap td:has(> .row-cb) { position: absolute; top: 14px; right: 50px; width: auto; min-height: 0; padding: 0; border: 0; }
+      .tbl-wrap td:has(> .row-menu) { position: absolute; top: 7px; right: 10px; width: auto; min-height: 0; padding: 0; border: 0; }
+      .tbl-wrap tr:has(.row-cb) td:nth-child(2) { padding-right: 76px; }
+      .tbl-wrap .empty td { justify-content: center; }
+    }
+    @media (max-width: 420px) {
+      .demo-tag { display: none; }
+      .logo { padding-right: 12px; }
+      .kpis { gap: 8px; padding: 8px; }
+      .stat { min-height: 100px; padding: 12px; }
+      .stat-val { font-size: 18px; overflow-wrap: anywhere; }
+      .stat .row { font-size: 11px; }
+      .big { font-size: 22px; }
+      .w-list { grid-template-columns: 1fr; }
+      .w { display: grid; grid-template-columns: 1fr auto; align-items: center; }
+      .w-top { grid-column: 1 / -1; }
+      .a-stats { grid-template-columns: 1fr 1fr; }
+      .floor { gap: 8px; }
+      .tb { height: 62px; }
+      .tb.round { width: 62px; }
+      .dishes { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .dish-img { height: 104px; }
+      .dish-b { padding: 9px 10px 10px; font-size: 11px; }
+      .dish-b > .row:first-child { flex-direction: column; align-items: flex-start; gap: 2px; }
+      .dish-b > .row.small { flex-wrap: wrap; gap: 2px 8px; }
+      .profile-top { flex-wrap: wrap; }
+      .profile-top .btn { margin-left: 0; }
+    }
+    @media (max-width: 1100px) and (min-width: 721px) {
+      .tbl-wrap table { min-width: 0; }
+      .tbl-wrap td { white-space: normal; }
+      .stock .bar { width: 70px; }
+    }
+    @media (max-width: 360px) {
+      .topbar, .right { gap: 6px; }
+      .brand-text small { display: none; }
+      #brandName { font-size: 16px; }
+      .logo { gap: 7px; padding: 4px 10px 4px 4px; }
+      .logo-mark { width: 32px; height: 32px; }
+      .icons .icon-btn { width: 30px; height: 30px; }
+      .user { padding: 3px; }
+      .user .avatar { width: 30px; height: 30px; }
+      .dishes { grid-template-columns: 1fr; }
+      .a-stats, .kpis { grid-template-columns: 1fr; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
@@ -1356,8 +1460,10 @@
     $('#userBtn').addEventListener('click', e => {
       openMenu(e.currentTarget, `<div class="mh">Signed in as Fahad</div>
         <button data-v="Profile"><span data-i="users"></span>My profile</button>
-        <button data-v="Settings"><span data-i="cog"></span>Settings</button><hr>
-        <button data-v="Log out" class="danger"><span data-i="logout"></span>Log out</button>`, v => v === 'Log out' ? signOut() : go('settings'));
+        <button data-v="Settings"><span data-i="cog"></span>Settings</button>
+        <button data-v="Theme"><span data-i="moon"></span>${document.documentElement.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode'}</button>
+        <button data-v="Help"><span data-i="help"></span>Help center</button><hr>
+        <button data-v="Log out" class="danger"><span data-i="logout"></span>Log out</button>`, v => v === 'Log out' ? signOut() : v === 'Theme' ? setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark') : v === 'Help' ? openHelp() : go('settings'));
     });
     $('#searchBtn').addEventListener('click', () => { if (current !== 'overview') go('overview'); $('.a-table').scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(() => $('#q').focus(), 350); });
     const intro = $('#intro');
@@ -1631,9 +1737,9 @@
       $('#greetActions').innerHTML = (g.actions || []).map(a => `<button class="btn ${a.cls || 'btn-dark'}" data-act="${a.id}">${icon(a.ic)}${a.label}</button>`).join('');
       RENDER[v]();
       replayReveal();
+      const at = $('#tabs .tab.active'); if (at) $('#tabs').scrollTo({ left: at.offsetLeft - 40, behavior: opts.initial ? 'auto' : 'smooth' });
       if (!opts.initial) {
         history.replaceState(null, '', '#' + v);
-        const at = $('#tabs .tab.active'); if (at) $('#tabs').scrollTo({ left: at.offsetLeft - 40, behavior: 'smooth' });
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
@@ -2333,6 +2439,17 @@
         toast(`${h[0]}: ${h[2] ? 'open' : 'closed'}`, 'clock');
       }
     });
+
+    /* ---------- Table cell labels (used by the stacked mobile layout) ---------- */
+    function labelTable(tbody) {
+      const heads = [...tbody.closest('table').querySelectorAll('thead th')].map(th => th.textContent.trim());
+      tbody.querySelectorAll('tr').forEach(tr => [...tr.children].forEach((td, i) => { if (!td.hasAttribute('data-label')) td.dataset.label = td.colSpan > 1 ? '' : heads[i] || ''; }));
+    }
+    new MutationObserver(muts => {
+      const seen = new Set();
+      muts.forEach(m => { const tb = m.target.closest && m.target.closest('tbody'); if (tb && !seen.has(tb)) { seen.add(tb); labelTable(tb); } });
+    }).observe(document.body, { childList: true, subtree: true });
+    document.querySelectorAll('tbody').forEach(labelTable);
 
     /* ---------- Boot ---------- */
     applyProfile();
