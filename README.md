@@ -21,4 +21,8 @@ Light and dark mode, Pakistani Rupee amounts (Rs, Lakh, Crore), keyboard shortcu
 
 ## Tech
 
-A single `index.html` with plain HTML, CSS and JavaScript. No build step and no dependencies apart from Google Fonts.
+A single `index.html` with plain HTML, CSS and JavaScript. No build step and no dependencies apart from Google Fonts. Photos are stored locally in `img/` as small WebP files.
+
+## Photo credits
+
+All food, ingredient, market and portrait photos come from [Unsplash](https://unsplash.com) and are used under the [Unsplash License](https://unsplash.com/license). The people shown are stock-photo models, not real staff or customers.
